@@ -54,6 +54,7 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf(0)
                 }
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    //dont miss this .safeContentPadding()
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)

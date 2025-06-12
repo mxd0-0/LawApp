@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "875922314290",
+    "project_id": "lawapp-2275d",
+    "storage_bucket": "lawapp-2275d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875922314290:android:bb4328c85d72eec511582b",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQTZ6VLY5N1v_YxDi7iz_Qfnxhr_cI5Iw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
