@@ -21,6 +21,7 @@ import com.example.myapplication.ui.theme.AppTheme
 
 @Composable
 fun PaymentsScreen(modifier: Modifier = Modifier) {
+
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

@@ -3,16 +3,11 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
-    //id("com.google.devtools.ksp")
-    //id("com.google.dagger.hilt.android")
-
 }
 
 android {
     namespace = "com.example.myapplication"
     compileSdk = 35
-
-
 
     defaultConfig {
         applicationId = "com.example.myapplication"
@@ -58,6 +53,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.firebase.firestore)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -65,7 +61,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    
+    implementation(libs.androidx.navigation.compose) // or latest
+    implementation("androidx.compose.ui:ui:1.8.2") // or latest stable
 
 }

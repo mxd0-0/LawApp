@@ -1,7 +1,6 @@
 package com.example.myapplication.presentation.history
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -14,6 +13,7 @@ import com.example.myapplication.ui.theme.AppTheme
 
 @Composable
 fun HistoryScreen(modifier: Modifier = Modifier) {
+
     val dummyData = listOf(
         HistoryItem("21/03/2024", "طلب قمح", "وصف قصير للطلب الأولوصف قصير للطلب الأولوصف قصير للطلب الأولوصف قصير للطلب الأولوصف الثاني الثاني قصير للطلب الأول"),
         HistoryItem("22/03/2024", "طلب شعير", "وصف قصير للطلب الثاني الثاني الثاني"),
