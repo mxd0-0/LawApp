@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.domain.model.HistoryItem
 import com.example.myapplication.presentation.history.components.historyItemCard
-import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.ui.theme.AppTheme
 
 @Composable
 fun HistoryScreen(modifier: Modifier = Modifier) {
@@ -38,7 +38,7 @@ fun HistoryScreen(modifier: Modifier = Modifier) {
 @Composable
 @Preview
 fun HistoryScreenPrev() {
-    MyApplicationTheme {
+    AppTheme {
         HistoryScreen()
     }
 }

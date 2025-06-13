@@ -44,7 +44,6 @@ fun AuthScreen(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (isLoggedIn) {
-
             OutlinedButton(onClick = {
                 authRepository.logout()
                 isLoggedIn = false

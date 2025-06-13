@@ -15,7 +15,7 @@ import com.example.myapplication.R
 import com.example.myapplication.presentation.home.components.homeCard
 
 @Composable
-fun homeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier) {
     val cards = listOf(
         Pair(R.drawable.chat, "اين قضياتي"),
         Pair(R.drawable.chat, "طلب عارضة"),
@@ -53,6 +53,6 @@ fun homeScreen(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun homeScreenPrev() {
-    homeScreen()
+    HomeScreen()
 
 }

@@ -15,8 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.ui.theme.Lorem
-import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.ui.theme.AppTheme
 
 
 @Composable
@@ -70,7 +69,7 @@ fun truncateArabicText(text: String): String {
 @Preview
 @Composable
 private fun historyItemCardPrev() {
-    MyApplicationTheme {
+    AppTheme {
         historyItemCard(
             date = "21/03/2024",
             title = "طلب قمح",

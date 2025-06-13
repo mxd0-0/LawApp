@@ -18,8 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.CardBackground
-import com.example.myapplication.ui.theme.MyApplicationTheme
-import com.example.myapplication.ui.theme.Primary
+import com.example.myapplication.ui.theme.AppTheme
 
 @Composable
 fun homeCard(
@@ -41,7 +40,7 @@ fun homeCard(
         ) {
             Icon(
                 painter = painterResource(icon),
-                tint = Primary,
+                tint = MaterialTheme.colorScheme.primary,
                 contentDescription = "chatIcon",
             )
 
@@ -57,7 +56,7 @@ fun homeCard(
 @Preview
 @Composable
 private fun homeCardPrev() {
-    MyApplicationTheme {
+    AppTheme {
         homeCard(
             text = "طلب عارضة",
             icon = R.drawable.chat,
