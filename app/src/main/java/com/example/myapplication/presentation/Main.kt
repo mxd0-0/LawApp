@@ -35,7 +35,7 @@ import com.example.myapplication.presentation.home.HomeScreen
 import com.example.myapplication.presentation.payment.PaymentsScreen
 
 @Composable
-fun Test(modifier: Modifier = Modifier) {
+fun Main() {
     val items = listOf(
         BottomNavigationItem(
             title = "Home",

@@ -46,7 +46,7 @@ fun AuthScreen(
 
     LaunchedEffect(state.isSignedIn) {
         if (state.isSignedIn) {
-            navController.navigate(Screen.Home.route) {
+            navController.navigate(Screen.Main.route) {
                 popUpTo(Screen.Auth.route) { inclusive = true }
             }
         }
