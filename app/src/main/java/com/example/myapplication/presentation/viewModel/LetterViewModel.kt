@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 class LetterViewModel(
     private val addLetterUseCase: AddLetterUseCase
 ) : ViewModel() {
-
     private val _addResult = MutableStateFlow<Result<Unit>?>(null)
     val addResult: StateFlow<Result<Unit>?> = _addResult
 

@@ -1,6 +1,7 @@
 package com.example.myapplication.presentation.history
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -21,7 +22,8 @@ fun HistoryScreen(modifier: Modifier = Modifier) {
         HistoryItem("24/03/2024", "طلب أرز", "وصف قصير الثانيالثاني للطلب الرابع")
     )
 
-    LazyColumn(modifier = modifier) {
+    LazyColumn(modifier = modifier
+        .padding(12.dp)) {
         items(dummyData) { item ->
             historyItemCard(
                 modifier = Modifier.padding(vertical = 8.dp),
