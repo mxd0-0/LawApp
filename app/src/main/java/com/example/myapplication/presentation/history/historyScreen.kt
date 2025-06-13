@@ -21,7 +21,7 @@ fun HistoryScreen(modifier: Modifier = Modifier) {
         HistoryItem("24/03/2024", "طلب أرز", "وصف قصير الثانيالثاني للطلب الرابع")
     )
 
-    LazyColumn(modifier = modifier.padding(16.dp)) {
+    LazyColumn(modifier = modifier) {
         items(dummyData) { item ->
             historyItemCard(
                 modifier = Modifier.padding(vertical = 8.dp),

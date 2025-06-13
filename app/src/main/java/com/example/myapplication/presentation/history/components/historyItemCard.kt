@@ -29,7 +29,7 @@ fun historyItemCard(
         modifier = modifier
             .fillMaxWidth(),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 modifier = Modifier,
                 horizontalArrangement = Arrangement.Center,

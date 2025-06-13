@@ -107,7 +107,7 @@ fun LoginScreen(
             pop()
         }
 
-        ClickableText(
+        /*ClickableText(
             text = annotatedString,
             onClick = { offset ->
                 annotatedString.getStringAnnotations("signup", offset, offset)
@@ -117,7 +117,7 @@ fun LoginScreen(
             },
             style = MaterialTheme.typography.bodySmall.copy(textAlign = TextAlign.Center),
             modifier = Modifier.fillMaxWidth()
-        )
+        )*/
     }
 }
 

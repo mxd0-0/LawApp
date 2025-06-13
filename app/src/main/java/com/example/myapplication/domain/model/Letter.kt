@@ -1,9 +1,5 @@
 package com.example.myapplication.domain.model
 
-
-
-
-
 data class Letter(
     val title: String = "",
     val description: String = "",
@@ -12,12 +8,6 @@ data class Letter(
     val idLetter: String = "",
     val fullName: String = "",
     val phoneNumber: String = "",
-    val category: LetterCategory = LetterCategory.FreeConsulting
+    val category: LetterCategory = LetterCategory.FreeConsulting,
 )
 
-enum class LetterCategory {
-    FreeConsulting,
-    OccasionalRequest,
-    Consulting,
-    FileRequest
-}
