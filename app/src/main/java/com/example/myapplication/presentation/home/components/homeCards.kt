@@ -1,5 +1,6 @@
 package com.example.myapplication.presentation.home.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,7 +41,10 @@ fun homeCard(
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.elevatedCardElevation(
             3.dp
-        )
+        ),
+        onClick = {
+            onClick()
+        }
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
