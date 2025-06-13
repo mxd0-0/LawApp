@@ -1,5 +1,9 @@
 package com.example.myapplication.presentation.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,7 +49,9 @@ import com.example.myapplication.domain.useCase.AddLetterUseCase
 import com.example.myapplication.presentation.home.components.homeCard
 import com.example.myapplication.presentation.viewModel.LetterViewModel
 import com.example.myapplication.ui.theme.AppTheme
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -55,12 +61,14 @@ import java.util.UUID
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen() {
     AppTheme {
         val firestore = FirebaseFirestore.getInstance()
         val repository = LetterRepositoryImpl(firestore)
         val useCase = AddLetterUseCase(repository)
         val viewModel = LetterViewModel(useCase)
+        var selectedCategory by remember { mutableStateOf<LetterCategory?>(null) }
+
 
         val cards = listOf(
             Pair(R.drawable.chat, "إستشارة مجانية"),
@@ -88,13 +96,18 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     ) {
                         items(cards) { (icon, text) ->
                             homeCard(
-                                icon = icon, text = text, onClick = {
-                                    when (text) {
-                                        "إستشارة مجانية" -> isSheetOpen = true
-                                        "طلب عارضة" -> isSheetOpen = true
-                                        "إستشارة" -> isSheetOpen = true
-                                        "طلب ملف" -> isSheetOpen = true
+                                icon = icon, text = text,
+                                onClick = {
+
+                                    selectedCategory = when (text) {
+                                        "إستشارة مجانية" -> LetterCategory.FreeConsulting
+                                        "طلب عارضة" -> LetterCategory.OccasionalRequest
+                                        "إستشارة" -> LetterCategory.Consulting
+                                        "طلب ملف" -> LetterCategory.FileRequest
+                                        else -> null
                                     }
+                                    isSheetOpen = selectedCategory != null
+
                                 }, modifier = Modifier
                                     .padding(4.dp)
                                     .size(150.dp, 200.dp)
@@ -103,31 +116,40 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     }
                 }
 
-                if (isSheetOpen) {
+                if (isSheetOpen && selectedCategory != null) {
                     ModalBottomSheet(
-                        onDismissRequest = { isSheetOpen = false },
+                        onDismissRequest = {
+                            isSheetOpen = false
+                            selectedCategory = null
+                        },
                         sheetState = sheetState,
                     ) {
                         LetterFormScreen(
-                            title = "طلب عارضة", onLetterSent = {
+                            formTitle = selectedCategory!!.name, // or make a mapping from enum to readable string
+                            onLetterSent = {
                                 scope.launch {
                                     sheetState.hide()
                                     isSheetOpen = false
+                                    selectedCategory = null
                                 }
-                            }, viewModel = viewModel
+                            },
+                            viewModel = viewModel,
+                            category = selectedCategory!! // <== Pass it here
                         )
                     }
                 }
+
             }
         }
     }
 }
 
-
+/*
 @Composable
 fun LetterFormScreen(
     viewModel: LetterViewModel,
     title: String, // e.g., "طلب عارضة"
+    category: LetterCategory,
     onLetterSent: () -> Unit, // callback after successful send
 ) {
 
@@ -235,7 +257,7 @@ fun LetterFormScreen(
                     idLetter = UUID.randomUUID().toString(),
                     fullName = fullName,
                     phoneNumber = number,
-                    category = LetterCategory.Consulting // Replace with actual category logic
+                    category = category // Replace with actual category logic
                 )
                 uploadStatus = "Uploading..."
                 viewModel.addLetter(NewLetter)
@@ -250,7 +272,166 @@ fun LetterFormScreen(
             }
         }
     }
+}*/
+
+@Composable
+fun LetterFormScreen(
+    viewModel: LetterViewModel,
+    formTitle: String,
+    category: LetterCategory,
+    onLetterSent: () -> Unit,
+) {
+
+
+
+    var isPushed by remember { mutableStateOf(false) }
+    var isSending by remember { mutableStateOf(false) }
+
+    var letterTitle by remember { mutableStateOf("") }
+    var fullName by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+
+    var uploadStatus by remember { mutableStateOf("Idle") }
+
+    val addResult by viewModel.addResult.collectAsState()
+    val scope = rememberCoroutineScope()
+
+    // Listen for result
+    LaunchedEffect(addResult) {
+        addResult?.onSuccess {
+            uploadStatus = "✅ تم الإرسال بنجاح"
+            isPushed = true
+            isSending = false
+            delay(1000)
+            onLetterSent()
+        }?.onFailure {
+            uploadStatus = "❌ فشل الإرسال: ${it.message}"
+            isSending = false
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = formTitle,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.headlineSmall
+        )
+
+        // --- عنوان الطلب
+        Text(
+            "عنوان الطلب",
+            textAlign = TextAlign.End,
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleMedium
+        )
+        OutlinedTextField(
+            shape = MaterialTheme.shapes.large,
+            value = letterTitle,
+            onValueChange = { letterTitle = it },
+            maxLines = 1,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // --- الاسم الكامل
+        Text(
+            "الاسم الكامل",
+            textAlign = TextAlign.End,
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleMedium
+        )
+        OutlinedTextField(
+            shape = MaterialTheme.shapes.large,
+            value = fullName,
+            onValueChange = { fullName = it },
+            maxLines = 1,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // --- رقم الهاتف
+        Text(
+            "رقم الهاتف",
+            textAlign = TextAlign.End,
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleMedium
+        )
+        OutlinedTextField(
+            shape = MaterialTheme.shapes.large,
+            value = phoneNumber,
+            onValueChange = { phoneNumber = it },
+            maxLines = 1,
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        // --- الوصف
+        Text(
+            "الوصف",
+            textAlign = TextAlign.End,
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleMedium
+        )
+        OutlinedTextField(
+            shape = MaterialTheme.shapes.large,
+            value = description,
+            onValueChange = { description = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
+        )
+
+        // --- زر الإرسال
+        Button(
+            onClick = {
+                val userId = FirebaseAuth.getInstance().currentUser!!.uid
+                val newLetter = Letter(
+                    title = letterTitle,
+                    description = description,
+                    date = getCurrentDateString(),
+                    userId = userId,
+                    idLetter = UUID.randomUUID().toString(),
+                    fullName = fullName,
+                    phoneNumber = phoneNumber,
+                    category = category
+                )
+                uploadStatus = "📤 جاري الإرسال..."
+                isSending = true
+                viewModel.addLetter(newLetter)
+            },
+            enabled = description.isNotBlank() && !isSending && !isPushed,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            if (isSending) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp))
+            } else {
+                Text(text = if (!isPushed) "إرسال الطلب" else "تم الإرسال")
+            }
+        }
+
+        // --- عرض حالة التحميل مع ظهور تدريجي
+        AnimatedVisibility(
+            visible = uploadStatus != "Idle",
+            enter = fadeIn(tween(400)),
+            exit = fadeOut(tween(400)),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(
+                text = uploadStatus,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (uploadStatus.startsWith("✅")) Color(0xFF4CAF50)
+                else if (uploadStatus.startsWith("❌")) Color.Red
+                else Color.Gray
+            )
+        }
+    }
 }
+
 
 fun getCurrentDateString(): String {
     return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
