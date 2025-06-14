@@ -34,7 +34,7 @@ fun PaymentsScreen(modifier: Modifier = Modifier) {
             tint = MaterialTheme.colorScheme.primary
         )
         Spacer(Modifier.height(25.dp))
-        Text("Coming Soon",
+        Text("قريباً",
            style =  MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary)
     }

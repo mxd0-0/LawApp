@@ -1,5 +1,7 @@
 package com.example.myapplication.presentation.auth
 
+
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +39,6 @@ import com.example.myapplication.R
 import com.example.myapplication.presentation.Screen
 import com.example.myapplication.presentation.viewModel.AuthViewModel
 import com.example.myapplication.ui.theme.AppTheme
-
 
 @Composable
 fun AuthScreen(
@@ -55,6 +58,8 @@ fun AuthScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isSignIn by remember { mutableStateOf(true) }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
 
     AppTheme {
         Column(
@@ -75,8 +80,11 @@ fun AuthScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp),
                 value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") }
+                onValueChange = {
+                    email = it
+                },
+                label = { Text("Email") },
+                isError = state.error?.contains("email", ignoreCase = true) == true
             )
 
             OutlinedTextField(
@@ -84,9 +92,36 @@ fun AuthScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp),
                 value = password,
-                onValueChange = { password = it },
-                label = { Text("Password") }
+                onValueChange = {
+                    password = it
+                    passwordError = null
+                },
+                label = { Text("Password") },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val icon = if (passwordVisible) R.drawable.visibility_off else R.drawable.visibility
+                    Icon(
+                        painter = painterResource(icon),
+                        contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .clickable { passwordVisible = !passwordVisible }
+                    )
+                },
+                isError = passwordError != null
             )
+
+            // Local password error
+            passwordError?.let {
+                Text(
+                    text = it,
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 10.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -101,7 +136,11 @@ fun AuthScreen(
                         if (isSignIn) {
                             viewModel.signIn(email, password)
                         } else {
-                            viewModel.signUp(email, password)
+                            if (password.length < 8) {
+                                passwordError = "Too short (min 8)"
+                            } else {
+                                viewModel.signUp(email, password)
+                            }
                         }
                     }
                 ) {
@@ -111,7 +150,10 @@ fun AuthScreen(
                     )
                 }
 
-                TextButton(onClick = { isSignIn = !isSignIn }) {
+                TextButton(onClick = {
+                    isSignIn = !isSignIn
+                    passwordError = null
+                }) {
                     Text(
                         buildAnnotatedString {
                             if (isSignIn) {
@@ -131,10 +173,15 @@ fun AuthScreen(
                     )
                 }
             }
-
+            // Firebase error message
             state.error?.let {
-                Text("Error: $it", color = Color.Red)
+                Text(
+                    text = "Wrong email or password",
+                    color = Color.Red,
+                    fontSize = 12.sp
+                )
             }
         }
     }
 }
+
