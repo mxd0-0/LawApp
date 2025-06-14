@@ -33,6 +33,10 @@ class LetterViewModel : ViewModel() {
             _userLetters.value = letters
         }
     }
+    fun resetResult() {
+        _addResult.value = null
+
+    }
 
     fun addLetter(letter: Letter) {
         addLetterUseCase(

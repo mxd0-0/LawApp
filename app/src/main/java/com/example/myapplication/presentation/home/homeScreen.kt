@@ -165,9 +165,6 @@ fun LetterFormScreen(
     category: LetterCategory,
     onLetterSent: () -> Unit,
 ) {
-
-
-
     var isPushed by remember { mutableStateOf(false) }
     var isSending by remember { mutableStateOf(false) }
 
@@ -180,11 +177,15 @@ fun LetterFormScreen(
 
     val scrollState = rememberScrollState()
 
-
     val addResult by viewModel.addResult.collectAsState()
     val scope = rememberCoroutineScope()
 
-    // Listen for result
+    // 🧼 Reset result on entry to avoid stale close
+    LaunchedEffect(Unit) {
+        viewModel.resetResult()
+    }
+
+    // ✅ React to submit result
     LaunchedEffect(addResult) {
         addResult?.onSuccess {
             uploadStatus = "✅ تم الإرسال بنجاح"
@@ -212,59 +213,36 @@ fun LetterFormScreen(
             style = MaterialTheme.typography.headlineSmall
         )
 
-        // --- عنوان الطلب
-        Text(
-            "عنوان الطلب",
-            textAlign = TextAlign.End,
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium
-        )
+        // عنوان الطلب
+        Text("عنوان الطلب", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(
             shape = MaterialTheme.shapes.large,
             value = letterTitle,
             onValueChange = { letterTitle = it },
-            maxLines = 1,
             modifier = Modifier.fillMaxWidth()
         )
 
-        // --- الاسم الكامل
-        Text(
-            "الاسم الكامل",
-            textAlign = TextAlign.End,
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium
-        )
+        // الاسم الكامل
+        Text("الاسم الكامل", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(
             shape = MaterialTheme.shapes.large,
             value = fullName,
             onValueChange = { fullName = it },
-            maxLines = 1,
             modifier = Modifier.fillMaxWidth()
         )
 
-        // --- رقم الهاتف
-        Text(
-            "رقم الهاتف",
-            textAlign = TextAlign.End,
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium
-        )
+        // رقم الهاتف
+        Text("رقم الهاتف", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(
             shape = MaterialTheme.shapes.large,
             value = phoneNumber,
             onValueChange = { phoneNumber = it },
-            maxLines = 1,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
-        // --- الوصف
-        Text(
-            "الوصف",
-            textAlign = TextAlign.End,
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium
-        )
+        // الوصف
+        Text("الوصف", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(
             shape = MaterialTheme.shapes.large,
             value = description,
@@ -273,7 +251,7 @@ fun LetterFormScreen(
                 .fillMaxWidth()
                 .height(150.dp)
         )
-        // --- عرض حالة التحميل مع ظهور تدريجي
+
         AnimatedVisibility(
             visible = uploadStatus != "Idle",
             enter = fadeIn(tween(400)),
@@ -282,14 +260,12 @@ fun LetterFormScreen(
         ) {
             Text(
                 text = uploadStatus,
-                style = MaterialTheme.typography.bodyMedium,
                 color = if (uploadStatus.startsWith("✅")) Color(0xFF4CAF50)
                 else if (uploadStatus.startsWith("❌")) Color.Red
                 else Color.Gray
             )
         }
 
-        // --- زر الإرسال
         Button(
             onClick = {
                 val userId = FirebaseAuth.getInstance().currentUser!!.uid
@@ -316,10 +292,9 @@ fun LetterFormScreen(
                 Text(text = if (!isPushed) "إرسال الطلب" else "تم الإرسال")
             }
         }
-
-
     }
 }
+
 
 
 fun getCurrentDateString(): String {
