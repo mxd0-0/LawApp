@@ -28,31 +28,42 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.R
 import com.example.myapplication.domain.model.BottomNavigationItem
 import com.example.myapplication.presentation.history.HistoryScreen
 import com.example.myapplication.presentation.home.HomeScreen
 import com.example.myapplication.presentation.payment.PaymentsScreen
+import com.example.myapplication.presentation.profile.ProfileScreen
 import com.example.myapplication.presentation.viewModel.LetterViewModel
 
 @Composable
-fun Main() {
+fun Main(    navController: NavController,
+) {
     val items = listOf(
         BottomNavigationItem(
             title = "Home",
-            selectedIcon = Icons.Filled.Home,
-            unselectedIcon = Icons.Outlined.Home,
+            selectedIcon =R.drawable.home_solid ,
+            unselectedIcon =R.drawable.home ,
         ),
         BottomNavigationItem(
             title = "History",
-            selectedIcon = Icons.Filled.Create,
-            unselectedIcon = Icons.Outlined.Create,
+            selectedIcon = R.drawable.time_solid,
+            unselectedIcon = R.drawable.time,
+        ),
+        BottomNavigationItem(
+            title = "Payments",
+            selectedIcon = R.drawable.receiptsolid,
+            unselectedIcon = R.drawable.receipt,
         ),
         BottomNavigationItem(
             title = "Profile",
-            selectedIcon = Icons.Filled.Person,
-            unselectedIcon = Icons.Outlined.Person,
+            selectedIcon = R.drawable.user_solid,
+            unselectedIcon = R.drawable.user,
         ),
     )
     var bottomNavState by rememberSaveable {
@@ -80,7 +91,7 @@ fun Main() {
 
                             ), icon = {
                             Icon(
-                                imageVector = item.selectedIcon,
+                                painter = painterResource(item.selectedIcon),
                                 contentDescription = item.title,
                                 tint = if (isSelected) MaterialTheme.colorScheme.primary
                                 else Color.Gray,
@@ -108,10 +119,9 @@ fun Main() {
                 // Here you can place your content based on the bottomNavState
                 when (bottomNavState) {
                     0 -> HomeScreen() // Replace with HomeScreen()
-                    1 -> HistoryScreen(
-                        viewModel = viewModel
-                    ) // Replace with HistoryScreen()
-                    2 -> PaymentsScreen() // Replace with ProfileScreen()
+                    1 -> HistoryScreen(viewModel = viewModel)
+                    2 -> PaymentsScreen()
+                    3-> ProfileScreen(navController)
                 }
                 // Content based on bottomNavState
             }

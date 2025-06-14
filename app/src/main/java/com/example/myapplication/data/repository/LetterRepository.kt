@@ -28,7 +28,6 @@ class LetterRepositoryImpl(
             .whereEqualTo("userId", userId)
             .get()
             .await()
-
         return snapshot.documents.mapNotNull { it.toObject(Letter::class.java) }
     }
 }

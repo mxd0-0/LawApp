@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -92,6 +94,14 @@ fun HomeScreen() {
                         .background(Color.White)
                         .padding(5.dp)
                 ) {
+                    Text(
+                        text = "الصفحة الرئيسية",
+                        style = MaterialTheme.typography.headlineSmall,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(bottom = 16.dp)
+                    )
+
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         horizontalArrangement = Arrangement.SpaceEvenly
@@ -146,135 +156,7 @@ fun HomeScreen() {
     }
 }
 
-/*
-@Composable
-fun LetterFormScreen(
-    viewModel: LetterViewModel,
-    title: String, // e.g., "طلب عارضة"
-    category: LetterCategory,
-    onLetterSent: () -> Unit, // callback after successful send
-) {
 
-    var isPushed by remember { mutableStateOf(false) }
-    var description by remember { mutableStateOf("") }
-    var title by remember { mutableStateOf("") }
-    var fullName by remember { mutableStateOf("") }
-    var number by remember { mutableStateOf("") }
-    var isSending by remember { mutableStateOf(false) }
-    //val scope = rememberCoroutineScope()
-    // NEw
-
-    val scope = rememberCoroutineScope()
-    var uploadStatus by remember { mutableStateOf("Idle") }
-    val addResult by viewModel.addResult.collectAsState()
-
-    // Observe result
-    LaunchedEffect(addResult) {
-        addResult?.onSuccess {
-            uploadStatus = "✅ Success"
-        }?.onFailure {
-            uploadStatus = "❌ Failed: ${it.message}"
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Column {
-            Text(
-                text = "عنوان الطلب",
-                textAlign = TextAlign.End,
-                modifier = Modifier.fillMaxWidth(),
-                style = MaterialTheme.typography.titleMedium
-            )
-            OutlinedTextField(
-                shape = MaterialTheme.shapes.large,
-                value = title,
-                onValueChange = { title = it },
-                maxLines = 1,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-
-        Column {
-            Text(
-                text = "الاسم كامل",
-                textAlign = TextAlign.End,
-                modifier = Modifier.fillMaxWidth(),
-                style = MaterialTheme.typography.titleMedium
-            )
-            OutlinedTextField(
-                shape = MaterialTheme.shapes.large,
-                value = fullName,
-                onValueChange = { fullName = it },
-
-                maxLines = 1,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-        Column {
-            Text(
-                text = "رقم الهاتف",
-                textAlign = TextAlign.End,
-                modifier = Modifier.fillMaxWidth(),
-                maxLines = 1,
-                style = MaterialTheme.typography.titleMedium
-            )
-            OutlinedTextField(
-                shape = MaterialTheme.shapes.large,
-                value = number,
-                onValueChange = { number = it },
-                maxLines = 1,
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-        }
-        Column {
-            Text(
-                text = "الوصف",
-                textAlign = TextAlign.End,
-                modifier = Modifier.fillMaxWidth(),
-                style = MaterialTheme.typography.titleMedium
-            )
-            OutlinedTextField(
-                shape = MaterialTheme.shapes.large,
-                value = description,
-                onValueChange = { description = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-            )
-        }
-
-        Button(
-            onClick = {
-                val NewLetter = Letter(
-                    title = title,
-                    description = description,
-                    date = getCurrentDateString(), // Example date, replace with actual date logic
-                    userId = "utilisateur_213",
-                    idLetter = UUID.randomUUID().toString(),
-                    fullName = fullName,
-                    phoneNumber = number,
-                    category = category // Replace with actual category logic
-                )
-                uploadStatus = "Uploading..."
-                viewModel.addLetter(NewLetter)
-            },
-            enabled = description.isNotBlank() && !isSending && !isPushed,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            if (isSending) {
-                CircularProgressIndicator(modifier = Modifier.size(20.dp))
-            } else {
-                Text(if (!isPushed) "Push Letter" else "Already Pushed")
-            }
-        }
-    }
-}*/
 
 @Composable
 fun LetterFormScreen(
@@ -283,9 +165,6 @@ fun LetterFormScreen(
     category: LetterCategory,
     onLetterSent: () -> Unit,
 ) {
-
-
-
     var isPushed by remember { mutableStateOf(false) }
     var isSending by remember { mutableStateOf(false) }
 
@@ -296,10 +175,17 @@ fun LetterFormScreen(
 
     var uploadStatus by remember { mutableStateOf("Idle") }
 
+    val scrollState = rememberScrollState()
+
     val addResult by viewModel.addResult.collectAsState()
     val scope = rememberCoroutineScope()
 
-    // Listen for result
+    // 🧼 Reset result on entry to avoid stale close
+    LaunchedEffect(Unit) {
+        viewModel.resetResult()
+    }
+
+    // ✅ React to submit result
     LaunchedEffect(addResult) {
         addResult?.onSuccess {
             uploadStatus = "✅ تم الإرسال بنجاح"
@@ -317,7 +203,8 @@ fun LetterFormScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
@@ -327,59 +214,36 @@ fun LetterFormScreen(
             style = MaterialTheme.typography.headlineSmall
         )
 
-        // --- عنوان الطلب
-        Text(
-            "عنوان الطلب",
-            textAlign = TextAlign.End,
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium
-        )
+        // عنوان الطلب
+        Text("عنوان الطلب", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(
             shape = MaterialTheme.shapes.large,
             value = letterTitle,
             onValueChange = { letterTitle = it },
-            maxLines = 1,
             modifier = Modifier.fillMaxWidth()
         )
 
-        // --- الاسم الكامل
-        Text(
-            "الاسم الكامل",
-            textAlign = TextAlign.End,
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium
-        )
+        // الاسم الكامل
+        Text("الاسم الكامل", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(
             shape = MaterialTheme.shapes.large,
             value = fullName,
             onValueChange = { fullName = it },
-            maxLines = 1,
             modifier = Modifier.fillMaxWidth()
         )
 
-        // --- رقم الهاتف
-        Text(
-            "رقم الهاتف",
-            textAlign = TextAlign.End,
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium
-        )
+        // رقم الهاتف
+        Text("رقم الهاتف", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(
             shape = MaterialTheme.shapes.large,
             value = phoneNumber,
             onValueChange = { phoneNumber = it },
-            maxLines = 1,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
-        // --- الوصف
-        Text(
-            "الوصف",
-            textAlign = TextAlign.End,
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium
-        )
+        // الوصف
+        Text("الوصف", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(
             shape = MaterialTheme.shapes.large,
             value = description,
@@ -389,7 +253,20 @@ fun LetterFormScreen(
                 .height(150.dp)
         )
 
-        // --- زر الإرسال
+        AnimatedVisibility(
+            visible = uploadStatus != "Idle",
+            enter = fadeIn(tween(400)),
+            exit = fadeOut(tween(400)),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(
+                text = uploadStatus,
+                color = if (uploadStatus.startsWith("✅")) Color(0xFF4CAF50)
+                else if (uploadStatus.startsWith("❌")) Color.Red
+                else Color.Gray
+            )
+        }
+
         Button(
             onClick = {
                 val userId = FirebaseAuth.getInstance().currentUser!!.uid
@@ -416,24 +293,9 @@ fun LetterFormScreen(
                 Text(text = if (!isPushed) "إرسال الطلب" else "تم الإرسال")
             }
         }
-
-        // --- عرض حالة التحميل مع ظهور تدريجي
-        AnimatedVisibility(
-            visible = uploadStatus != "Idle",
-            enter = fadeIn(tween(400)),
-            exit = fadeOut(tween(400)),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(
-                text = uploadStatus,
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (uploadStatus.startsWith("✅")) Color(0xFF4CAF50)
-                else if (uploadStatus.startsWith("❌")) Color.Red
-                else Color.Gray
-            )
-        }
     }
 }
+
 
 
 fun getCurrentDateString(): String {
