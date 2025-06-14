@@ -16,7 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,14 +39,16 @@ fun ProfileScreen(
 ) {
     val state = viewModel.uiState
 
-    // ✅ Check sign-in status once when the screen appears
+    // ✅ Check sign-in status when the screen appears
     LaunchedEffect(Unit) {
         viewModel.checkSignInStatus()
     }
 
-    // 🔁 If user is signed out, redirect to auth screen
-    LaunchedEffect(state.isSignedIn) {
-        if (!state.isSignedIn) {
+    // 🔁 Only navigate when user is signed out AND sign-out was requested manually
+    var shouldNavigate by remember { mutableStateOf(false) }
+
+    LaunchedEffect(state.isSignedIn, shouldNavigate) {
+        if (!state.isSignedIn && shouldNavigate) {
             navController.navigate(Screen.Auth.route) {
                 popUpTo(Screen.Main.route) { inclusive = true }
             }
@@ -57,7 +62,6 @@ fun ProfileScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Avatar image
         Image(
             painter = painterResource(id = R.drawable.ic_justice),
             contentDescription = "الصورة الشخصية",
@@ -67,18 +71,18 @@ fun ProfileScreen(
                 .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Sign out Button
+        // 🔘 Sign out Button
         Button(
-            onClick = { viewModel.signOut() },
+            onClick = {
+                viewModel.signOut()
+                shouldNavigate = true
+            },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
         ) {
-            Text("تسجيل الخlogout", color = MaterialTheme.colorScheme.onError)
+            Text("تسجيل الخروج", color = MaterialTheme.colorScheme.onError)
         }
     }
 }
+
