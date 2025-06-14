@@ -307,6 +307,7 @@ fun LetterFormScreen(
             isSending = false
             delay(1000)
             onLetterSent()
+            viewModel.clearAddResult() // Clear result in ViewModel (you must implement this)
         }?.onFailure {
             uploadStatus = "❌ فشل الإرسال: ${it.message}"
             isSending = false

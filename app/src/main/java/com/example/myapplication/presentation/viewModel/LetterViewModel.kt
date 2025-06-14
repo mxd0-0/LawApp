@@ -41,4 +41,7 @@ class LetterViewModel : ViewModel() {
             onError = { _addResult.value = Result.failure(it) }
         )
     }
+    fun clearAddResult() {
+        _addResult.value = null
+    }
 }
