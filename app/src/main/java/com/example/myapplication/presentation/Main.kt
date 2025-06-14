@@ -29,10 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.domain.model.BottomNavigationItem
 import com.example.myapplication.presentation.history.HistoryScreen
 import com.example.myapplication.presentation.home.HomeScreen
 import com.example.myapplication.presentation.payment.PaymentsScreen
+import com.example.myapplication.presentation.viewModel.LetterViewModel
 
 @Composable
 fun Main() {
@@ -56,7 +58,7 @@ fun Main() {
     var bottomNavState by rememberSaveable {
         mutableIntStateOf(0)
     }
-    val letterViewModel = androidx.lifecycle.viewmodel.compose.viewModel<com.example.myapplication.presentation.viewModel.LetterViewModel>()
+    val viewModel: LetterViewModel = viewModel()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -107,7 +109,7 @@ fun Main() {
                 when (bottomNavState) {
                     0 -> HomeScreen() // Replace with HomeScreen()
                     1 -> HistoryScreen(
-                        viewModel = letterViewModel
+                        viewModel = viewModel
                     ) // Replace with HistoryScreen()
                     2 -> PaymentsScreen() // Replace with ProfileScreen()
                 }

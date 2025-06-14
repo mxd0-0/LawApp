@@ -13,13 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.ui.theme.AppTheme
 
 
 @Composable
-fun historyItemCard(
+fun HistoryItemCard(
     date: String,
     title: String,
     description: String,
@@ -66,15 +64,3 @@ fun truncateArabicText(text: String): String {
     }
 }
 
-@Preview
-@Composable
-private fun historyItemCardPrev() {
-    AppTheme {
-        historyItemCard(
-            date = "21/03/2024",
-            title = "طلب قمح",
-            description = "وصف قصير للطلب الثاني",
-            modifier = Modifier.padding(16.dp)
-        )
-    }
-}

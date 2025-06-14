@@ -1,5 +1,6 @@
 package com.example.myapplication.presentation.home
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -46,7 +47,6 @@ import com.example.myapplication.data.repository.LetterRepositoryImpl
 import com.example.myapplication.domain.model.Letter
 import com.example.myapplication.domain.model.LetterCategory
 import com.example.myapplication.domain.useCase.AddLetterUseCase
-import com.example.myapplication.domain.useCase.GetUserLettersUseCase
 import com.example.myapplication.presentation.home.components.homeCard
 import com.example.myapplication.presentation.viewModel.LetterViewModel
 import com.example.myapplication.ui.theme.AppTheme
@@ -59,6 +59,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.UUID
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,11 +68,7 @@ fun HomeScreen() {
         val firestore = FirebaseFirestore.getInstance()
         val repository = LetterRepositoryImpl(firestore)
         val useCase = AddLetterUseCase(repository)
-        val useCase2 = GetUserLettersUseCase(repository)
-        val viewModel = LetterViewModel(
-            useCase,
-            useCase2
-        )
+        val viewModel = LetterViewModel()
         var selectedCategory by remember { mutableStateOf<LetterCategory?>(null) }
 
 
