@@ -8,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.presentation.auth.AuthScreen
-import com.example.myapplication.presentation.history.HistoryScreen
 import com.example.myapplication.presentation.home.HomeScreen
 import com.example.myapplication.presentation.payment.PaymentsScreen
 
@@ -43,7 +42,7 @@ fun AppNavHost() {
                 HomeScreen()
             }
             composable(Screen.History.route) {
-                HistoryScreen()
+
             }
             composable(Screen.Profile.route) {
                 PaymentsScreen()

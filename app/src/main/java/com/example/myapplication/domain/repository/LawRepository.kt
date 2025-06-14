@@ -8,4 +8,6 @@ interface LawRepository {
         onSuccess: () -> Unit,
         onError: (Exception) -> Unit
     )
+    suspend fun getLettersByUser(userId: String): List<Letter>
+
 }

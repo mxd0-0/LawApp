@@ -46,6 +46,7 @@ import com.example.myapplication.data.repository.LetterRepositoryImpl
 import com.example.myapplication.domain.model.Letter
 import com.example.myapplication.domain.model.LetterCategory
 import com.example.myapplication.domain.useCase.AddLetterUseCase
+import com.example.myapplication.domain.useCase.GetUserLettersUseCase
 import com.example.myapplication.presentation.home.components.homeCard
 import com.example.myapplication.presentation.viewModel.LetterViewModel
 import com.example.myapplication.ui.theme.AppTheme
@@ -66,7 +67,11 @@ fun HomeScreen() {
         val firestore = FirebaseFirestore.getInstance()
         val repository = LetterRepositoryImpl(firestore)
         val useCase = AddLetterUseCase(repository)
-        val viewModel = LetterViewModel(useCase)
+        val useCase2 = GetUserLettersUseCase(repository)
+        val viewModel = LetterViewModel(
+            useCase,
+            useCase2
+        )
         var selectedCategory by remember { mutableStateOf<LetterCategory?>(null) }
 
 

@@ -56,6 +56,7 @@ fun Main() {
     var bottomNavState by rememberSaveable {
         mutableIntStateOf(0)
     }
+    val letterViewModel = androidx.lifecycle.viewmodel.compose.viewModel<com.example.myapplication.presentation.viewModel.LetterViewModel>()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -105,7 +106,9 @@ fun Main() {
                 // Here you can place your content based on the bottomNavState
                 when (bottomNavState) {
                     0 -> HomeScreen() // Replace with HomeScreen()
-                    1 -> HistoryScreen() // Replace with HistoryScreen()
+                    1 -> HistoryScreen(
+                        viewModel = letterViewModel
+                    ) // Replace with HistoryScreen()
                     2 -> PaymentsScreen() // Replace with ProfileScreen()
                 }
                 // Content based on bottomNavState
