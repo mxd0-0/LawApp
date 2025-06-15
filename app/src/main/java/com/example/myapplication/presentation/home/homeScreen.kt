@@ -137,7 +137,7 @@ fun HomeScreen() {
                         sheetState = sheetState,
                     ) {
                         LetterFormScreen(
-                            formTitle = selectedCategory!!.name, // or make a mapping from enum to readable string
+                            formTitle = selectedCategory!!.name,
                             onLetterSent = {
                                 scope.launch {
                                     sheetState.hide()
@@ -146,7 +146,7 @@ fun HomeScreen() {
                                 }
                             },
                             viewModel = viewModel,
-                            category = selectedCategory!! // <== Pass it here
+                            category = selectedCategory!!
                         )
                     }
                 }

@@ -1,5 +1,7 @@
 package com.example.myapplication.domain.model
 
+
+
 data class Letter(
     val title: String = "",
     val description: String = "",
@@ -9,5 +11,7 @@ data class Letter(
     val fullName: String = "",
     val phoneNumber: String = "",
     val category: LetterCategory = LetterCategory.FreeConsulting,
+    val lawyerAnswer: String = "", // Add this
+    val lawyerId: String = ""      // Add this
 )
 

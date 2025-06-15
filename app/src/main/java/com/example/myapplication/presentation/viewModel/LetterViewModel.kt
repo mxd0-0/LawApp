@@ -26,11 +26,17 @@ class LetterViewModel : ViewModel() {
     private val _userLetters = mutableStateOf<List<Letter>>(emptyList())
     val userLetters: State<List<Letter>> = _userLetters
 
+    private val _isLoading = mutableStateOf(false)
+    val isLoading: State<Boolean> = _isLoading
+
+
     fun fetchUserLetters() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        _isLoading.value = true
         viewModelScope.launch {
             val letters = getUserLettersUseCase(userId)
             _userLetters.value = letters
+            _isLoading.value = false
         }
     }
     fun resetResult() {
