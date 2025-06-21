@@ -1,1 +1,1 @@
-### Admine: https://github.com/mxd0-0/LawyerApp
+### Admin: https://github.com/mxd0-0/LawyerApp
