@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.presentation.auth.AuthScreen
+import com.example.myapplication.presentation.auth.SignUpScreen
 import com.example.myapplication.presentation.home.HomeScreen
 import com.example.myapplication.presentation.payment.PaymentsScreen
 import com.example.myapplication.presentation.profile.ProfileScreen
@@ -15,6 +16,7 @@ import com.example.myapplication.presentation.profile.ProfileScreen
 sealed class Screen(val route: String) {
     object Auth : Screen("auth")
     object  Main : Screen("main")
+    object SignUp : Screen("signup_screen") // Add this
     object Home : Screen("home")
     object History : Screen("history")
     object Profile : Screen("profile")
@@ -33,8 +35,12 @@ fun AppNavHost() {
             startDestination = Screen.Auth.route,
             modifier = Modifier.padding(paddingValues)
         ) {
+
             composable(Screen.Main.route) {
                 Main(navController)
+            }
+            composable(Screen.SignUp.route) {
+                SignUpScreen(navController = navController)
             }
             composable(Screen.Auth.route) {
                 AuthScreen(navController = navController)

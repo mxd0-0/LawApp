@@ -1,5 +1,6 @@
 package com.example.myapplication.domain.useCase
 
+
 import com.example.myapplication.domain.repository.AuthRepository
 
 class AuthUseCase(private val repository: AuthRepository) {
@@ -8,8 +9,9 @@ class AuthUseCase(private val repository: AuthRepository) {
         return repository.signIn(email, password)
     }
 
-    suspend fun signUp(email: String, password: String): Result<Unit> {
-        return repository.signUp(email, password)
+    // Updated signUp to pass all arguments
+    suspend fun signUp(name: String, lastName: String, telephone: String, email: String, password: String): Result<Unit> {
+        return repository.signUp(name, lastName, telephone, email, password)
     }
 
     suspend fun signOut() {
